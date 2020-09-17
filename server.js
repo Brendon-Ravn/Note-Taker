@@ -22,23 +22,42 @@ app.get("/api/notes", function(req, res) {
 });
 
 app.post("/api/notes", function(req, res) {
-  fs.readFile(path.join(__dirname, "/db/db.json"), "utf8", function(err, res){
+  fs.readFile(path.join(__dirname, "/db/db.json"), "utf8", function(err, response){
     if (err) {
       console.log(err);
     }
-    const notes = JSON.parse(res);
+    const notes = JSON.parse(response);
     const myNote = {
-      id: notes.length + 7,
+      id: notes.length + 1,
       title: req.body.title,
       text: req.body.text
     };
     notes.push(myNote);
     res.json(myNote);
-    fs.writeFile(path.join(__dirname, "/db/db.json"), JSON.stringify(notes), function(err) {
-      if (err) {
-        console.log(err)
-      };
+    fs.writeFile(path.join(__dirname, "/db/db.json"), JSON.stringify(notes, null, 2), function(err) {
+      if (err) throw err;
     });
+  });
+});
+
+app.delete("/api/notes/:id", function(req, res) {
+  const deleteId = req.params.id;
+  fs.readFile("/db/db.json", "utf8", function(error, response) {
+    if (error) {
+      console.log(error);
+    }
+    let notes = JSON.parse(response);
+    if (deleteId <= notes.length) {
+      res.json(notes.splice(deleteId-1,1));
+      for (let i = 0; i < notes.length; i++) {
+        notes[i].id = i + 1;
+      }
+      fs.writeFile("db.json", JSON.stringify(notes, null, 2), function(err) {
+        if (err) throw err;
+      });
+    } else {
+      res.json(false);
+    }
   });
 });
 
