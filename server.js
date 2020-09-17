@@ -18,11 +18,11 @@ app.get("/notes", function(req, res) {
 });
 
 app.get("/api/notes", function(req, res) {
-  res.sendFile(path.join(__dirname, "db.json"));
+  res.sendFile(path.join(__dirname, "/db/db.json"));
 });
 
 app.post("/api/notes", function(req, res) {
-  fs.readFile(path.join(__dirname, "db.json"), "utf8", function(err, res){
+  fs.readFile(path.join(__dirname, "/db/db.json"), "utf8", function(err, res){
     if (err) {
       console.log(err);
     }
@@ -34,7 +34,7 @@ app.post("/api/notes", function(req, res) {
     };
     notes.push(myNote);
     res.json(myNote);
-    fs.writeFile(path.join(__dirname, "db.json"), JSON.stringify(notes), function(err) {
+    fs.writeFile(path.join(__dirname, "/db/db.json"), JSON.stringify(notes), function(err) {
       if (err) {
         console.log(err)
       };
